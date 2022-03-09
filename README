@@ -1,0 +1,35 @@
+Copyright 2021 Mitroi Mihnea-Cristian
+
+1.Server
+
+    Memoria serverelor este constituita in practica dintr-un hashtable. Cu
+ajutorul functiilor implementate in hashtable.c si linkedlist.c am realizat
+mai multe operatii. Operatia de initializare a memoriei de server este de fapt
+initializarea unui hashtable, plasarea unei chei pe un anumit server este
+punerea acesteia in locul potrivit pe hashtable, iar stergerea si verificarea
+existentei unei chei sunt realizate in mod asemanator cu functii ce vizeaza
+hashtable-urile. La eliberarea memoriei unui server se elibereaza atat
+hashtable-ul, cat si serverul.
+
+2. Load balancer
+
+    Load balancerul este constituit dintr-un array de servere si un aray de
+tip hashring, ce stocheaza pe el o pereche id server - hash indiferent ca e
+vorba de serverul propriu-zis sau de o replica. Initializara loader-ului
+presupune alocarea de spatiu pentru vectori si setarea size-ul pe 0, ce
+reprezinta numarul de elemente stocate in hashring.
+
+    Functia loader_store cauta in tot array-ul de servere cheia si o plaseaza in
+concordanta cu hashring-ul. loader_retrive si loader_remove sunt relizate in
+mode asemanator.
+    Loader_add_server se bazeaza pe modificarea hashring-ului initial cu
+adaugarea serverului si a replicilor pe hashring si apoi cu mutarea obiectelor,
+pentru a putea adauga cheile usor cu loader_store. Logica de la
+loader_remove_server este similara, mai intai se modifica hashring-ul, iar
+apoi toate cheile aflate pe serverul initial retinut sunt stocate la pozitia
+potrivita.
+
+    Functia de eliberare a memoriei loader-ului sterge un anumit server pe baza
+hashring-ului, insa o face o singura data, nu si la replici deoarece verifica
+hash-ul etichetei, care nu corespunde cu hash-ul serverului la replici. Apoi
+sunt eliberate si restul lucrurilor alocate.
